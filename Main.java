@@ -15,7 +15,7 @@ public class Main extends Script {
 	
 	@Override
 	public void onStart() {
-		log("Bank search beginning . . . ");
+		log("Bone reaper is out on the prowl . . . ");
 	}
 
 	@Override
@@ -41,17 +41,27 @@ public class Main extends Script {
 			if(getWalking().webWalk(chickenPen)) {
 				//Turn off run
 				//Attack chickens
+				//Pick up bones
+				log("<<< At Chicken Pen >>>");
+				Entity closestChicken = getNpcs().closest("Chicken");
+				if(!getCombat().isFighting() && !myPlayer().isAnimating()) {
+					closestChicken.interact("Attack");
+					log(getCombat().getFighting().getHealthPercent());
+				}
+				else if(getCombat().getFighting() != null && getCombat().getFighting().getHealthPercent() == 0){
+					log("<<< Dead chicken >>>");
+				}
 			}
 			else {
-				
+				log("<<< Not at Chicken Pen >>>");
 			}
 		}
-		return random(200, 300);
+		return random(600, 900);
 	}
 
 	@Override
 	public void onExit() {
-		log("Bank search ending . . . ");
+		log("Bone reaper is full of bones . . . ");
 	}
 
 	@Override
