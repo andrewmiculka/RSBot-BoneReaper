@@ -6,11 +6,13 @@ import org.osbot.rs07.script.ScriptManifest;
 import org.osbot.rs07.api.model.Entity;
 import org.osbot.rs07.api.map.*;
 import org.osbot.rs07.api.map.constants.Banks;
+import org.osbot.rs07.utility.*;
 
 @ScriptManifest(author = "Andrew Miculka", info = "Harvest chicken bones for sale", name = "Bone Reaper", version = 0, logo = "")
 public class Main extends Script {
 
 	Entity closestBank = null;
+	Entity closestChicken = null;
 	static Area chickenPen = new Area(new Position(3171, 3289, 0), new Position(3183, 3301, 0));
 	
 	@Override
@@ -38,23 +40,38 @@ public class Main extends Script {
 			}
 		}
 		else {
-			if(getWalking().webWalk(chickenPen)) {
-				//Turn off run
-				//Attack chickens
-				//Pick up bones
-				log("<<< At Chicken Pen >>>");
-				Entity closestChicken = getNpcs().closest("Chicken");
-				if(!getCombat().isFighting() && !myPlayer().isAnimating()) {
-					closestChicken.interact("Attack");
-					log(getCombat().getFighting().getHealthPercent());
-				}
-				else if(getCombat().getFighting() != null && getCombat().getFighting().getHealthPercent() == 0){
-					log("<<< Dead chicken >>>");
-				}
+			
+			if(!chickenPen.contains(myPlayer())) {
+				getWalking().webWalk(chickenPen);
 			}
 			else {
-				log("<<< Not at Chicken Pen >>>");
+				
+				getSettings().setRunning(false);
+				log("<<< At Chicken Pen >>>");
+
+				if(closestChicken != null && closestChicken.exists()) {
+					log("<<< Attacking chicken >>>");
+					closestChicken.interact("Attack");
+					new ConditionalSleep(20000, 500) {
+						@Override
+						public boolean condition() throws InterruptedException{
+							return !closestChicken.exists();
+						}
+					};
+					log("<<< Dead chicken >>>");
+					
+				}	
+				else {
+					log("<<< Targeting chicken >>>");
+					closestChicken = getNpcs().closest("Chicken");
+				}
+				/*else if(getCombat().getFighting() != null && getCombat().getFighting().getHealthPercent() == 0){
+
+					
+				}*/
+
 			}
+
 		}
 		return random(600, 900);
 	}
