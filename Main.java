@@ -55,9 +55,10 @@ public class Main extends Script {
 					new ConditionalSleep(20000, 500) {
 						@Override
 						public boolean condition() throws InterruptedException{
+							log("Inside conditionalSleep");
 							return !closestChicken.exists();
 						}
-					};
+					}.sleep();
 					log("<<< Dead chicken >>>");
 					
 				}	
