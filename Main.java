@@ -34,8 +34,8 @@ public class Main extends Script {
 					getBank().open();
 				}
 				else if(getBank().isOpen()) {
-					//deposit bones
-					//check bone amount
+					getBank().depositAll("Bones");
+					getBank().close();
 				}
 			}
 		}
